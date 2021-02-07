@@ -24,6 +24,8 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
+X = [ones(m, 1) X];
+
          
 % You need to return the following variables correctly 
 J = 0;
@@ -62,23 +64,24 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% forward propagation
+a1 = sigmoid(X * Theta1');
+a1 = [ones(size(a1,1),1) a1];
+a2 = sigmoid(a1 * Theta2');
 
+% one hot encoding the labels
+one_hot_y = zeros(m, num_labels);
+for j=1:num_labels
+  one_hot_y(:,j) = y == j;
+end
 
+% calc cost function J without regolarization
+J = 1/m * sum(sum(-log(a2) .* one_hot_y - log(1-a2) .* (1-one_hot_y)));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% add regularization
+nonbias_Theta1 = Theta1(1:end,2:end);
+nonbias_Theta2 = Theta2(1:end,2:end);
+J = J + lambda /(2 * m) * (sum(sum(nonbias_Theta1.^2)) + sum(sum(nonbias_Theta2.^2)));
 
 % -------------------------------------------------------------
 
