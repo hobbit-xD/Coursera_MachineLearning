@@ -21,7 +21,24 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% add bias
+X = [ones(m,1) X];
 
+% Compute first layer
+z1 = X * Theta1';
+a1 = sigmoid(z1);
+
+% add bias
+new_size = size(a1,1);
+a1 = [ones(new_size,1) a1];
+
+% Compute second layer
+z2 = a1 * Theta2';
+a2 = sigmoid(z2);
+
+% find prediction
+[max_value, index] = max(a2, [], 2);
+p = index;
 
 
 
