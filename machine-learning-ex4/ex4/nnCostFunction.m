@@ -65,9 +65,11 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 % forward propagation
-a1 = sigmoid(X * Theta1');
-a1 = [ones(size(a1,1),1) a1];
-a2 = sigmoid(a1 * Theta2');
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+bias_a2 = [ones(size(a2,1),1) a2];
+z3 = bias_a2 * Theta2';
+a3 = sigmoid(z3);
 
 % one hot encoding the labels
 one_hot_y = zeros(m, num_labels);
@@ -76,13 +78,29 @@ for j=1:num_labels
 end
 
 % calc cost function J without regolarization
-J = 1/m * sum(sum(-log(a2) .* one_hot_y - log(1-a2) .* (1-one_hot_y)));
+J = 1/m * sum(sum(-log(a3) .* one_hot_y - log(1-a3) .* (1-one_hot_y)));
 
 % add regularization
 nonbias_Theta1 = Theta1(1:end,2:end);
 nonbias_Theta2 = Theta2(1:end,2:end);
 J = J + lambda /(2 * m) * (sum(sum(nonbias_Theta1.^2)) + sum(sum(nonbias_Theta2.^2)));
 
+% calc gradients
+for k=1:m
+  delta_3 = (a3(k,:) - one_hot_y(k,:));
+  delta_3 = delta_3';
+  delta_2 = (Theta2(:,2:end)' * delta_3) .* sigmoidGradient(z2(k,:))';
+  Theta2_grad = Theta2_grad + delta_3 * bias_a2(k,:);
+  Theta1_grad = Theta1_grad + delta_2 * X(k,:);
+end
+
+
+Theta1_grad(:,2:end) = 1/m * (Theta1_grad(:,2:end) + lambda * Theta1(:,2:end));
+Theta1_grad(:,1) = 1/m * Theta1_grad(:,1);
+Theta2_grad(:,2:end) = 1/m * (Theta2_grad(:,2:end) + lambda * Theta2(:,2:end));
+Theta2_grad(:,1) = 1/m * Theta2_grad(:,1);
+ 
+  
 % -------------------------------------------------------------
 
 % =========================================================================
