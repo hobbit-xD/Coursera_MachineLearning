@@ -155,8 +155,6 @@ fprintf('  %f  \n', X_poly(1, :));
 fprintf('\nProgram paused. Press enter to continue.\n');
 pause;
 
-
-
 %% =========== Part 7: Learning Curve for Polynomial Regression =============
 %  Now, you will get to experiment with polynomial regression with multiple
 %  values of lambda. The code below runs polynomial regression with 
@@ -164,7 +162,7 @@ pause;
 %  lambda to see how the fit and learning curve change.
 %
 
-lambda = 0;
+lambda = 2.3;
 [theta] = trainLinearReg(X_poly, y, lambda);
 
 % Plot training data and fit
@@ -194,6 +192,8 @@ end
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
+
+
 
 %% =========== Part 8: Validation for Selecting Lambda =============
 %  You will now implement validationCurve to test various values of 
